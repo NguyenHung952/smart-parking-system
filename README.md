@@ -1,406 +1,246 @@
-# \# Smart Parking IoT
+# Smart Parking IoT
+
+Hệ thống bãi đỗ xe thông minh sử dụng STM32F207 ARM KIT, Python, SQLite, Web Dashboard, QR và ANPR.
+
+## 1. Tổng quan
+
+Dự án kết hợp phần cứng nhúng với phần mềm PC để theo dõi trạng thái bãi xe, bộ đếm xe vào/ra, dữ liệu lịch sử và giao diện Web Dashboard.
+
+ARM KIT là nguồn quyết định trạng thái parking. Python tiếp nhận dữ liệu qua RS232, xử lý và đồng bộ với SQLite. Web Dashboard đọc dữ liệu từ SQLite để hiển thị.
+
+```text
+STM32 / ARM KIT
+       |
+     RS232
+       |
+       v
+Python Application
+       |
+       v
+SQLite Database
+       |
+       v
+Web Dashboard
+```
 
-# 
+## 2. Phần cứng
 
-# Hệ thống bãi đỗ xe thông minh sử dụng STM32F207 ARM KIT, Python, SQLite, Web Dashboard, QR và ANPR.
+- STM32F207VGTX ARM KIT
+- LCD 16x2
+- 4 parking slots
+- EEPROM 24C16
+- RS232
+- Nút/cảm biến mô phỏng trạng thái slot và cổng
 
-# 
+## 3. Công nghệ
 
-# \## 1. Kiến trúc hệ thống
+- Embedded C / STM32 HAL
+- STM32F207
+- STM32CubeIDE
+- RS232
+- Python 3.11
+- SQLite
+- Flask
+- HTML / CSS / JavaScript
+- QR
+- ANPR
 
-# 
+## 4. Cấu trúc repository
 
-# ```text
+```text
+parking_iot/
+├── Core/
+│   ├── Inc/
+│   ├── Src/
+│   ├── Startup/
+│   └── Python/
+│       ├── ANPR/
+│       └── web/
+├── Drivers/
+├── .cproject
+├── .mxproject
+├── .project
+├── parking_iot.ioc
+├── setup.bat
+├── run_main.bat
+├── run_anpr.bat
+├── run_web.bat
+└── README.md
+```
 
-# STM32 / ARM KIT
+## 5. Yêu cầu
 
-# &#x20;      |
+Cần cài:
 
-# &#x20;    RS232
+- Git
+- Python 3.11
+- STM32CubeIDE
+- Driver/USB hoặc giao tiếp phù hợp với ARM KIT
 
-# &#x20;      |
+Kiểm tra Python:
 
-# &#x20;      v
+```cmd
+py -3.11 --version
+```
 
-# Python Application
+## 6. Cài đặt trên máy mới
 
-# &#x20;      |
+Clone repository:
 
-# &#x20;      v
+```cmd
+git clone https://github.com/NguyenHung952/smart-parking-system.git
+```
 
-# SQLite Database
+Vào thư mục:
 
-# &#x20;      |
+```cmd
+cd smart-parking-system
+```
 
-# &#x20;      v
+Chạy:
 
-# Web Dashboard
+```cmd
+setup.bat
+```
 
-# 
+`setup.bat` sẽ kiểm tra Python 3.11, tạo virtual environment `.venv`, cập nhật pip, cài các package từ các file requirements và kiểm tra ANPR model.
 
-# STM32/ARM KIT là bộ điều khiển chính của hệ thống. Python nhận dữ liệu từ Kit, xử lý và đồng bộ dữ liệu với cơ sở dữ liệu và Web Dashboard.
+## 7. ANPR model
 
-# 
+Model `best.pt` không được lưu trực tiếp trong repository.
 
-# 2\. Thành phần phần cứng
+Sau khi có model, đặt tại:
 
-# STM32F207VGTX ARM KIT
+```text
+Core/Python/ANPR/models/best.pt
+```
 
-# LCD 16x2
+Xem thêm:
 
-# 4 parking slots
+```text
+Core/Python/ANPR/models/README.md
+```
 
-# EEPROM 24C16
+Repository hiện không cung cấp URL tải model trong README vì nguồn tải model phải được project author xác định riêng.
 
-# RS232
+## 8. STM32
 
-# Nút/cảm biến mô phỏng trạng thái slot và cổng
+Mở project bằng STM32CubeIDE hoặc import thư mục project hiện có.
 
-# 3\. Công nghệ
+Project chính:
 
-# Embedded C / STM32 HAL
+```text
+parking_iot.ioc
+```
 
-# STM32F207
+Build firmware và nạp vào STM32F207 ARM KIT.
 
-# STM32CubeIDE
+## 9. Chạy Python
 
-# RS232
+```cmd
+run_main.bat
+```
 
-# Python 3.11
+PC Client xử lý giao tiếp serial, nhận trạng thái ARM KIT và lưu dữ liệu vào SQLite.
 
-# SQLite
+## 10. Chạy ANPR
 
-# Flask
+Sau khi đã đặt `best.pt` đúng vị trí:
 
-# HTML / CSS / JavaScript
+```cmd
+run_anpr.bat
+```
 
-# ANPR
+ANPR sử dụng camera, detector và OCR để nhận diện biển số.
 
-# QR
+## 11. Web Dashboard
 
-# 4\. Cấu trúc project
+```cmd
+run_web.bat
+```
 
-# parking\_iot/
+Sau đó mở:
 
-# |
+```text
+http://127.0.0.1:5000
+```
 
-# +-- Core/
+Dashboard hiển thị trạng thái 4 slot, số xe, chỗ trống, bộ đếm IN/OUT, trạng thái cổng, lịch sử sự kiện và thông tin ANPR.
 
-# |   +-- Inc/
+## 12. Luồng dữ liệu
 
-# |   +-- Src/
+```text
+ARM KIT
+   ↓
+RS232
+   ↓
+Python Client
+   ↓
+SQLite
+   ↓
+Web Dashboard
+```
 
-# |   +-- Startup/
+ARM KIT quyết định trạng thái parking. Web Dashboard không tự quyết định IN/OUT.
 
-# |   +-- Python/
+ANPR chỉ cung cấp thông tin biển số và không tự tạo sự kiện IN/OUT.
 
-# |       +-- ANPR/
+## 13. Database
 
-# |       +-- web/
+Database runtime được tạo/sử dụng trong quá trình chạy hệ thống.
 
-# |
+Các file database runtime không được commit vào repository.
 
-# +-- Drivers/
+## 14. Các file không nằm trong Git
 
-# |
+```text
+.venv/
+Debug/
+build/
+dist/
+logs/
+*.db
+*.db-wal
+*.db-shm
+SmartParking.exe
+Core/Python/ANPR/models/best.pt
+Core/Python/ANPR/data/latest_frame.jpg
+project_tree.txt
+```
 
-# +-- parking\_iot.ioc
+## 15. Chức năng hiện tại
 
-# +-- .project
+- [x] STM32/ARM KIT
+- [x] 4 parking slots
+- [x] LCD 16x2
+- [x] EEPROM 24C16
+- [x] RS232 communication
+- [x] Parking state management
+- [x] Vehicle IN/OUT counter
+- [x] SQLite database
+- [x] Web Dashboard
+- [x] QR processing
+- [x] ANPR source integration
+- [ ] Hoàn thiện toàn bộ quy trình ANPR thực tế
+- [ ] Gate motor integration
+- [ ] RFID integration
 
-# +-- .cproject
+## 16. Tài liệu
 
-# +-- setup.bat
+Các báo cáo tiến độ và tài liệu hiện trạng được lưu trực tiếp trong repository.
 
-# +-- run\_main.bat
+Chi tiết từng phần:
 
-# +-- run\_anpr.bat
+- `Core/Python/README.md` — PC Client và logic xử lý parking
+- `Core/Python/ANPR/README_ANPR.md` — ANPR
+- `Core/Python/web/README_WEB.md` — Web Dashboard
+- `Core/Python/QR_README.md` — QR
 
-# +-- run\_web.bat
+## 17. Tác giả
 
-# +-- README.md
+Nguyễn Ngọc Hùng  
+Sinh viên Điện tử - Viễn thông, IUH.
 
-# 5\. Yêu cầu phần mềm
+## 18. Trạng thái
 
-# 
-
-# Cần cài:
-
-# 
-
-# Git
-
-# Python 3.11
-
-# STM32CubeIDE
-
-# Driver/USB hoặc giao tiếp phù hợp với ARM KIT
-
-# 
-
-# Kiểm tra Python:
-
-# 
-
-# py -3.11 --version
-
-# 6\. Cài đặt project
-
-# 
-
-# Clone repository:
-
-# 
-
-# git clone https://github.com/NguyenHung952/smart-parking-system.git
-
-# 
-
-# Vào project:
-
-# 
-
-# cd smart-parking-system
-
-# 
-
-# Chạy:
-
-# 
-
-# setup.bat
-
-# 
-
-# Script sẽ:
-
-# 
-
-# Kiểm tra Python 3.11.
-
-# Tạo Python virtual environment.
-
-# Cập nhật pip.
-
-# Cài các package từ các file requirements.
-
-# Kiểm tra ANPR model.
-
-# 7\. ANPR model
-
-# 
-
-# Model best.pt không được lưu trực tiếp trong Git repository.
-
-# 
-
-# File cần có:
-
-# 
-
-# Core/Python/ANPR/models/best.pt
-
-# 
-
-# Tải model từ nguồn tài nguyên của project và đặt đúng tên:
-
-# 
-
-# best.pt
-
-# 
-
-# Sau khi đặt file, cấu trúc phải là:
-
-# 
-
-# Core/
-
-# └── Python/
-
-# &#x20;   └── ANPR/
-
-# &#x20;       └── models/
-
-# &#x20;           ├── best.pt
-
-# &#x20;           └── README.md
-
-# 8\. Chạy STM32
-
-# 
-
-# Mở project:
-
-# 
-
-# parking\_iot.ioc
-
-# 
-
-# hoặc import project vào STM32CubeIDE.
-
-# 
-
-# Build firmware và nạp firmware vào STM32F207 ARM KIT.
-
-# 
-
-# 9\. Chạy Python
-
-# 
-
-# Có thể chạy:
-
-# 
-
-# run\_main.bat
-
-# 10\. Chạy ANPR
-
-# 
-
-# Sau khi đã cài model:
-
-# 
-
-# run\_anpr.bat
-
-# 
-
-# ANPR sử dụng camera và model nhận diện biển số.
-
-# 
-
-# 11\. Chạy Web Dashboard
-
-# run\_web.bat
-
-# 
-
-# Web Dashboard được sử dụng để theo dõi:
-
-# 
-
-# Trạng thái 4 slot
-
-# Số xe đang có trong bãi
-
-# Số chỗ còn trống
-
-# Bộ đếm IN/OUT
-
-# Trạng thái cổng
-
-# Lịch sử sự kiện
-
-# Thông tin ANPR
-
-# 12\. Database
-
-# 
-
-# Database SQLite được tạo và sử dụng trong quá trình chạy hệ thống.
-
-# 
-
-# Các database runtime không được đưa vào repository.
-
-# 
-
-# Repository chỉ chứa source code và cấu hình cần thiết.
-
-# 
-
-# 13\. Các file không nằm trong Git
-
-# 
-
-# Các dữ liệu runtime/build không được commit:
-
-# 
-
-# .venv/
-
-# Debug/
-
-# build/
-
-# dist/
-
-# logs/
-
-# \*.db
-
-# \*.db-wal
-
-# \*.db-shm
-
-# SmartParking.exe
-
-# best.pt
-
-# 14\. Chức năng hiện tại
-
-# &#x20;STM32/ARM KIT
-
-# &#x20;4 parking slots
-
-# &#x20;LCD 16x2
-
-# &#x20;EEPROM 24C16
-
-# &#x20;RS232 communication
-
-# &#x20;Parking state management
-
-# &#x20;Vehicle IN/OUT counter
-
-# &#x20;SQLite database
-
-# &#x20;Web Dashboard
-
-# &#x20;QR processing
-
-# &#x20;ANPR source integration
-
-# &#x20;Hoàn thiện toàn bộ quy trình ANPR thực tế
-
-# &#x20;Gate motor integration
-
-# &#x20;RFID integration
-
-# 15\. Lưu ý
-
-# 
-
-# Project sử dụng ARM KIT làm nguồn trạng thái chính của hệ thống parking.
-
-# 
-
-# Python và Web Dashboard nhận và hiển thị dữ liệu từ hệ thống.
-
-# 
-
-# Không nên đưa các file runtime, virtual environment hoặc file build vào Git repository.
-
-# 
-
-# 16\. Tác giả
-
-# 
-
-# Nguyễn Ngọc Hùng
-
-# 
-
-# Sinh viên Điện tử - Viễn thông, IUH.
-
-# 
-
-# 17\. Repository
-
-# 
-
-# https://github.com/NguyenHung952/smart-parking-system
-
+Smart Parking IoT — đang phát triển.
