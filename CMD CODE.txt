@@ -1,0 +1,177 @@
+SMART PARKING – CMD COMMANDS
+================================
+
+PROJECT
+Project: D:\STM32CUBE\BAITAP\parking_iot
+
+Python:  D:\STM32CUBE\BAITAP\parking_iot\Core\Python
+
+ANPR:    D:\STM32CUBE\BAITAP\parking_iot\Core\Python\ANPR
+
+
+[1] MỞ WEBSITE
+==============
+
+Cách 1 – chạy chương trình chính:
+
+cd /d D:\STM32CUBE\BAITAP\parking_iot\Core\Python
+python main.py
+
+Cách 2 – chạy Web trực tiếp:
+
+cd /d D:\STM32CUBE\BAITAP\parking_iot\Core\Python
+python web.py
+
+
+[2] MỞ CAMERA ANPR
+==================
+
+cd /d D:\STM32CUBE\BAITAP\parking_iot\Core\Python\ANPR
+.venv\Scripts\activate
+python camera.py --camera 0
+
+Thoát camera:
+- Nhấn Q
+- Hoặc ESC
+
+
+[3] TEST DÒ BIỂN SỐ XE – YOLO
+=============================
+
+cd /d D:\STM32CUBE\BAITAP\parking_iot\Core\Python\ANPR
+.venv\Scripts\activate
+python test_detector.py
+
+
+[4] TEST NHẬN DIỆN BIỂN SỐ – YOLO + OCR
+========================================
+
+cd /d D:\STM32CUBE\BAITAP\parking_iot\Core\Python\ANPR
+.venv\Scripts\activate
+python test_ocr.py
+
+Định dạng biển số hiện tại:
+12-B1-168-88
+
+
+[5] TEST DATABASE LỊCH SỬ ANPR
+==============================
+
+cd /d D:\STM32CUBE\BAITAP\parking_iot\Core\Python\ANPR
+.venv\Scripts\activate
+python plate_history.py
+
+Database ANPR:
+D:\STM32CUBE\BAITAP\parking_iot\Core\Python\ANPR\data\plate_history.db
+
+
+[6] KIỂM TRA PYTHON
+===================
+
+python --version
+py -3.13 --version
+
+
+[7] KIỂM TRA YOLO
+=================
+
+python -c "from ultralytics import YOLO; print('YOLO OK')"
+
+
+[8] KIỂM TRA PADDLEOCR
+======================
+
+python -c "from paddleocr import PaddleOCR; print('PaddleOCR OK')"
+
+
+[9] KIỂM TRA PADDLEPADDLE
+=========================
+
+python -c "import paddle; print('PaddlePaddle:', paddle.__version__)"
+
+
+[10] KIỂM TRA VIRTUAL ENVIRONMENT
+=================================
+
+cd /d D:\STM32CUBE\BAITAP\parking_iot\Core\Python\ANPR
+.venv\Scripts\activate
+python -c "import sys; print(sys.executable)"
+
+Kết quả mong đợi:
+D:\STM32CUBE\BAITAP\parking_iot\Core\Python\ANPR\.venv\Scripts\python.exe
+
+
+[11] TẮT VIRTUAL ENVIRONMENT
+============================
+
+deactivate
+
+
+[12] CẤU TRÚC ANPR HIỆN TẠI
+===========================
+
+ANPR
+│
+├── camera.py
+├── detector.py
+├── ocr.py
+├── plate_history.py
+├── test_ocr.py
+├── test_detector.py
+├── test_anpr.py
+│
+├── models
+│   └── best.pt
+│
+├── data
+│   └── plate_history.db
+│
+└── .venv
+
+
+[13] QUY TRÌNH TEST ANPR
+========================
+
+Bước 1:
+cd /d D:\STM32CUBE\BAITAP\parking_iot\Core\Python\ANPR
+
+Bước 2:
+.venv\Scripts\activate
+
+Bước 3 – kiểm tra YOLO:
+python -c "from ultralytics import YOLO; print('YOLO OK')"
+
+Bước 4 – test camera + YOLO:
+python camera.py --camera 0
+
+Bước 5 – test YOLO + OCR:
+python test_ocr.py
+
+Bước 6 – test Database:
+python plate_history.py
+
+Bước 7 – test tích hợp ANPR + Database:
+python test_anpr.py
+
+
+[14] GHI CHÚ
+============
+
+- Camera hiện dùng camera PC Lenovo T470.
+- Camera index đang dùng: 0.
+- ANPR sử dụng YOLO + PaddleOCR.
+- YOLO model:
+  models\best.pt
+- Database lịch sử ANPR được tách riêng khỏi Database/Web hiện tại.
+- Database ANPR:
+  data\plate_history.db
+- Không tự ý sửa Database/Web Dashboard đang hoạt động ổn định.
+- Biển số test hiện tại: 12-B1-168-88.
+- Định dạng biển số cần giữ:
+  12-B1-168-88
+- Virtual environment của ANPR nằm tại:
+  D:\STM32CUBE\BAITAP\parking_iot\Core\Python\ANPR\.venv
+- Python dùng cho ANPR: Python 3.13.
+- Khi test ANPR, trước tiên activate .venv.
+- Chưa kết nối ANPR với STM32/RS232/Web Dashboard ở giai đoạn test độc lập.
+- Chỉ sau khi ANPR độc lập chạy ổn định mới tích hợp vào hệ thống chính.

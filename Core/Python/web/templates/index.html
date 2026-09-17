@@ -1,0 +1,158 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Smart Parking</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <main class="dashboard">
+    <header class="topbar">
+      <div class="brand">
+        <div class="brand-mark">P</div>
+        <div>
+          <h1>Smart Parking</h1>
+          <p>Quản lý bãi đỗ xe · ARM KIT + ANPR</p>
+        </div>
+      </div>
+      <div class="system-status" id="connection">
+        <span class="dot"></span>Đang kết nối...
+      </div>
+    </header>
+
+    <section class="overview-grid">
+      <article class="overview-card main-stat">
+        <div class="card-icon">🚗</div>
+        <div>
+          <span>Xe trong bãi</span>
+          <strong id="occ">-</strong>
+          <small> xe</small>
+        </div>
+      </article>
+
+      <article class="overview-card">
+        <div class="mini-label">CHỖ TRỐNG</div>
+        <strong id="free">-</strong>
+        <span>/ 4 vị trí</span>
+      </article>
+
+      <article class="overview-card">
+        <div class="mini-label">LƯỢT VÀO</div>
+        <strong id="inCount">-</strong>
+        <span>lượt</span>
+      </article>
+
+      <article class="overview-card">
+        <div class="mini-label">LƯỢT RA</div>
+        <strong id="outCount">-</strong>
+        <span>lượt</span>
+      </article>
+
+      <article class="overview-card gate-card">
+        <div class="mini-label">CỔNG</div>
+        <strong id="gate">-</strong>
+        <span id="gateHint">trạng thái</span>
+      </article>
+    </section>
+
+    <section class="parking-section">
+      <div class="section-heading">
+        <h2>Sơ đồ bãi đỗ</h2>
+        <div class="legend">
+          <span><i class="legend-dot free-dot"></i>Trống</span>
+          <span><i class="legend-dot occupied-dot"></i>Có xe</span>
+        </div>
+      </div>
+
+      <div class="parking-layout">
+        <div class="lane-label entrance-label">CỔNG VÀO</div>
+        <div class="lane"></div>
+
+        <div class="slots">
+          <article class="parking-slot" id="slot1">
+            <div class="slot-number">01</div>
+            <div class="slot-body">
+              <div class="slot-title">VỊ TRÍ 1</div>
+              <div class="slot-state">ĐANG KIỂM TRA</div>
+            </div>
+          </article>
+
+          <article class="parking-slot" id="slot2">
+            <div class="slot-number">02</div>
+            <div class="slot-body">
+              <div class="slot-title">VỊ TRÍ 2</div>
+              <div class="slot-state">ĐANG KIỂM TRA</div>
+            </div>
+          </article>
+
+          <article class="parking-slot" id="slot3">
+            <div class="slot-number">03</div>
+            <div class="slot-body">
+              <div class="slot-title">VỊ TRÍ 3</div>
+              <div class="slot-state">ĐANG KIỂM TRA</div>
+            </div>
+          </article>
+
+          <article class="parking-slot" id="slot4">
+            <div class="slot-number">04</div>
+            <div class="slot-body">
+              <div class="slot-title">VỊ TRÍ 4</div>
+              <div class="slot-state">ĐANG KIỂM TRA</div>
+            </div>
+          </article>
+        </div>
+
+        <div class="lane-label exit-label">CỔNG RA</div>
+      </div>
+    </section>
+
+    <section class="panel anpr-panel">
+      <div class="panel-heading">
+        <h2>ANPR · Nhận diện biển số</h2>
+        <span class="anpr-status" id="anprStatus">Đang kiểm tra...</span>
+      </div>
+      <div class="anpr-grid">
+        <div class="anpr-camera">
+          <img id="anprFrame" src="/api/anpr/frame" alt="Camera ANPR" onerror="this.style.opacity='0.25'">
+        </div>
+        <div class="anpr-info">
+          <div class="mini-label">BIỂN SỐ MỚI NHẤT</div>
+          <strong id="anprPlate">—</strong>
+          <p id="anprNote">ANPR chỉ nhận diện biển số. ARM KIT vẫn là MASTER.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="panel history-panel">
+      <div class="panel-heading">
+        <h2>Lịch sử xe vào / xe ra</h2>
+        <button class="refresh" onclick="loadEvents()">↻ Làm mới</button>
+      </div>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Thời gian</th>
+              <th>Sự kiện</th>
+              <th>Slot</th>
+              <th>Biển số</th>
+            </tr>
+          </thead>
+          <tbody id="events">
+            <tr><td colspan="4">Đang tải...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <footer>
+      <span id="updated">Chưa cập nhật</span>
+      <span>ARM KIT · ANPR</span>
+    </footer>
+  </main>
+
+  <script src="{{ url_for('static', filename='app.js') }}"></script>
+</body>
+</html>

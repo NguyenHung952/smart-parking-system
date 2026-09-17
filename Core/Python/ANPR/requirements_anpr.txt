@@ -1,0 +1,6 @@
+# ANPR dependencies - install separately from the stable PC/STM32 requirements.
+opencv-python>=4.8
+numpy>=1.24
+ultralytics>=8.2
+# PaddleOCR/PaddlePaddle versions should be selected as a compatible pair for Windows/CPU.
+paddleocr

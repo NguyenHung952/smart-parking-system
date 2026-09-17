@@ -1,0 +1,41 @@
+# Python
+.venv/
+venv/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.pytest_cache/
+.mypy_cache/
+
+# Logs
+logs/
+*.log
+
+# Runtime database
+*.db
+*.db-wal
+*.db-shm
+
+# STM32 build output
+Debug/
+Release/
+build/
+
+# Packaged application
+dist/
+SmartParking.exe
+
+# ANPR model - download separately
+Core/Python/ANPR/models/best.pt
+
+# Generated files
+project_tree.txt
+
+# IDE temporary files
+.vscode/
+.idea/
+*.tmp
+*.bak
+*~
+Core/Python/ANPR/data/latest_frame.jpg
